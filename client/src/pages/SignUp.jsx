@@ -49,16 +49,15 @@ export default function SignUp() {
             </span>
             자기소개소
           </Link>
-          <p className="text-sm mt-6">
-            안녕하세요 이 웹사이트는 자기소개서 첨삭을 해주는 프로젝트입니다.
-          </p>
+          <p className="text-sm mt-6">입 벌려라, 자기소개서 훈수 들어간다잉.</p>
+          <p className="text-sm">- ChatGPT -</p>
         </div>
         {/* 왼쪽 */}
 
         <div className="flex-1">
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <div>
-              <Label value="닉네임" />
+              <Label value="사용자 이름" />
               <TextInput
                 type="text"
                 placeholder="너는마늘이였어"
@@ -101,7 +100,7 @@ export default function SignUp() {
           </form>
           <div className="text-sm mt-5 flex gap-2">
             <span>이미 계정이 있으신가요?</span>
-            <Link to="/sign-up" className="text-blue-500">
+            <Link to="/sign-in" className="text-blue-500">
               로그인
             </Link>
           </div>
