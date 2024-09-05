@@ -21,7 +21,13 @@ export default class AuthService {
   private async findByEmail(email: string): Promise<IUser | null> {
     return await this.usersRepository.findByEmail(email);
   }
-
+  public async findMe(email: string): Promise<UserResponseRO> {
+    const user = await this.usersRepository.findByEmail(email);
+    if (!user) {
+      throw new ErrorHandler(404, "유저 정보가 존재하지 않습니다.");
+    }
+    return this.toUserResponseRO(user);
+  }
   private async findByUsername(username: string): Promise<IUser | null> {
     return await this.usersRepository.findByUsername(username);
   }
