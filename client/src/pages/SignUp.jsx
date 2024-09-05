@@ -1,3 +1,118 @@
+import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
+import { useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+
 export default function SignUp() {
-  return <div>SignUp</div>;
+  const [formData, setFormData] = useState({});
+  const [errorMessages, setErrorMessages] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessages('빈 칸을 모두 기입해 주세요!');
+    }
+    try {
+      setLoading(true);
+      setErrorMessages(null);
+      await axios.post('/api/auth/signup', formData);
+      navigate('/sign-in');
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 409) {
+          // 백엔드에서 중복 데이터로 인해 409 에러 발생 시
+          setErrorMessages('이미 사용 중인 이메일 또는 사용자 이름입니다.');
+        } else {
+          setErrorMessages(
+            error.response.data.message || '회원가입 중 오류가 발생했습니다.'
+          );
+        }
+      } else {
+        setErrorMessages(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="main-h-screen mt-20">
+      <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-6">
+        <div className="flex-1">
+          <Link to="/" className="font-semibold dark:text-white text-4xl">
+            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 rounded-lg via-purple-500 to-Blue-500 text-white">
+              루크의
+            </span>
+            자기소개소
+          </Link>
+          <p className="text-sm mt-6">
+            안녕하세요 이 웹사이트는 자기소개서 첨삭을 해주는 프로젝트입니다.
+          </p>
+        </div>
+        {/* 왼쪽 */}
+
+        <div className="flex-1">
+          <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+            <div>
+              <Label value="닉네임" />
+              <TextInput
+                type="text"
+                placeholder="너는마늘이였어"
+                id="username"
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label value="이메일" />
+              <TextInput
+                type="email"
+                placeholder="example@example.com"
+                id="email"
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label value="비밀번호" />
+              <TextInput
+                type="password"
+                placeholder="1q2w3e4r"
+                id="password"
+                onChange={handleChange}
+              />
+            </div>
+            <Button
+              gradientDuoTone="purpleToBlue"
+              type="submit"
+              disabled={loading === true}
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">로딩 중....</span>
+                </>
+              ) : (
+                '회원가입'
+              )}
+            </Button>
+          </form>
+          <div className="text-sm mt-5 flex gap-2">
+            <span>이미 계정이 있으신가요?</span>
+            <Link to="/sign-up" className="text-blue-500">
+              로그인
+            </Link>
+          </div>
+          {errorMessages && (
+            <Alert className="mt-5" color="red">
+              {errorMessages}
+            </Alert>
+          )}
+        </div>
+        {/* 오른쪽 */}
+      </div>
+    </div>
+  );
 }

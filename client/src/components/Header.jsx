@@ -10,7 +10,7 @@ export default function Header() {
         to="/"
         className="self-center whitespace-nowrap text-sm font-semibold dark:text"
       >
-        <span className="px-2 py-1 bg-gradient-to-r from-indigo-400 rounded-lg via-purple-400 to-pink-500 text-white">
+        <span className="px-2 py-1 bg-gradient-to-r  from-indigo-500 rounded-lg via-purple-500 to-Blue-500 text-white">
           루크의
         </span>
         자기소개소
