@@ -54,7 +54,7 @@ export default function SignIn() {
             <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 rounded-lg via-purple-500 to-Blue-500 text-white">
               루크의
             </span>
-            sdssd 자기소개소
+            자기소개소
           </Link>
           <p className="text-sm mt-6">입 벌려라, 자기소개서 훈수 들어간다잉.</p>
           <p className="text-sm">- ChatGPT -</p>
