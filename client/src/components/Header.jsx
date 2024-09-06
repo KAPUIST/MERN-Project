@@ -1,15 +1,42 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleTheme } from '../redux/theme/themeSlice';
 
+import { toggleTheme } from '../redux/theme/themeSlice';
+import axios from 'axios';
+import {
+  startDeleteUser,
+  successDeleteUser,
+  failedDeleteUser,
+} from '../redux/user/userSlice';
 export default function Header() {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+
+  const handleLogout = async () => {
+    dispatch(startDeleteUser());
+    try {
+      await axios.delete('/api/auth/signout');
+      dispatch(successDeleteUser());
+      navigate('/');
+    } catch (error) {
+      if (error.response) {
+        dispatch(
+          failedDeleteUser(
+            error.response.data.message || '로그아웃 중 오류가 발생했습니다.'
+          )
+        );
+      } else {
+        dispatch(failedDeleteUser(error.message));
+      }
+    }
+  };
+
   return (
     <Navbar className="border-b-2">
       <Link
@@ -58,7 +85,7 @@ export default function Header() {
               <Dropdown.Item>프로필</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item>로그아웃</Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to="/sign-in">
