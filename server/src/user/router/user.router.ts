@@ -11,5 +11,6 @@ const userController = new UserController(authService);
 const router = express.Router();
 
 router.get("/me", isAuthenticated, userController.findMe);
+router.delete("/me", isAuthenticated, userController.deleteUser);
 
 export default router;

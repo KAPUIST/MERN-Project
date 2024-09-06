@@ -1,7 +1,7 @@
 import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
 import { CreateUserDto, createUserSchema } from "../dtos/signup.dto";
-import { successResponse } from "../../utils/response.util";
+import { failedResponse, successResponse } from "../../utils/response.util";
 import { LoginUserDto, loginUserSchema } from "../dtos/login.dto";
 //유저 생성 컨트롤러
 export default class AuthController {

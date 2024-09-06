@@ -20,4 +20,12 @@ export default class UsersRepository {
     const newUser = new this.userRepository(userData);
     return await newUser.save();
   }
+  public async deleteUser(email: string) {
+    const deletedUser = await this.userRepository.deleteOne({ email });
+
+    if (deletedUser.deletedCount === 0) {
+      return false;
+    }
+    return true;
+  }
 }

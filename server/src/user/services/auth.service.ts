@@ -74,4 +74,14 @@ export default class AuthService {
     }
     return this.toUserResponseRO(user);
   }
+
+  //유저 삭제
+  public async deleteUser(email: string) {
+    const user = await this.findByEmail(email);
+    if (!user) {
+      throw new ErrorHandler(404, "존재하지 않는 유저입니다.");
+    }
+    const isDeleted = await this.usersRepository.deleteUser(email);
+    return isDeleted;
+  }
 }
