@@ -71,7 +71,7 @@ export default class ConversationService {
       ]
     });
 
-    const aiMessage = response.choices[0]?.message.content;
+    const aiMessage = response.choices[0].message.content || "AI 응답을 가져오지 못했습니다.";
     if (!aiMessage) {
       throw new ErrorHandler(500, "AI 응답을 생성하는 중 오류가 발생했습니다.");
     }
@@ -80,21 +80,17 @@ export default class ConversationService {
   }
 
   public async getConversationByEmail(email: string) {
-    try {
-      if (!email) {
-        throw new ErrorHandler(400, "유효하지 않은 이메일입니다.");
-      }
-
-      // 유저의 이메일로 대화 기록을 조회
-      const conversation = await this.conversationRepository.findByEmail(email);
-
-      if (!conversation) {
-        throw new ErrorHandler(404, "대화 기록을 찾을 수 없습니다.");
-      }
-
-      return conversation.messages;
-    } catch (error) {
-      throw error;
+    if (!email) {
+      throw new ErrorHandler(400, "유효하지 않은 이메일입니다.");
     }
+
+    // 유저의 이메일로 대화 기록을 조회
+    const conversation = await this.conversationRepository.findByEmail(email);
+
+    if (!conversation) {
+      throw new ErrorHandler(404, "대화 기록을 찾을 수 없습니다.");
+    }
+
+    return conversation.messages;
   }
 }

@@ -1,19 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { startConversationApi } from '../api/api';
 import {
   startSendMessage,
   failedSendMessage,
   successAiResponse,
+  resetConversation,
 } from '../redux/chat/chatSlice'; // Redux actions
 import { Spinner } from 'flowbite-react';
 
 export default function Chat() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user); // 현재 유저 정보
-  const { messages, loading } = useSelector((state) => state.chat); // 채팅 메시지와 로딩 상태
+  const { messages, loading, conversationId } = useSelector(
+    (state) => state.chat
+  ); // 채팅 메시지와 로딩 상태
 
   const [inputMessage, setInputMessage] = useState(''); // 사용자의 입력
+  useEffect(() => {
+    // currentUser가 null이 되면 로그아웃으로 간주하고 대화 상태 초기화
+    if (!currentUser) {
+      dispatch(resetConversation());
+    }
+  }, [currentUser, dispatch]);
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
@@ -22,7 +31,10 @@ export default function Chat() {
       const userMessage = inputMessage; // 사용자 메시지
       dispatch(startSendMessage(userMessage));
       // 서버로 메시지 전송 후 AI 응답 대기
-      const res = await startConversationApi({ message: inputMessage });
+      const res = await startConversationApi({
+        conversationId,
+        message: inputMessage,
+      });
 
       dispatch(successAiResponse(res.data)); // AI 응답 추가
 
@@ -40,7 +52,7 @@ export default function Chat() {
           <div
             key={index}
             className={`flex ${
-              msg.role === 'user' ? 'justify-end' : 'justify-start'
+              msg.role === 'user' ? 'justify-start' : 'justify-end'
             }`}
           >
             <div
@@ -55,7 +67,6 @@ export default function Chat() {
           </div>
         ))}
 
-        {/* 로딩 상태 표시 */}
         {loading && (
           <div className="flex justify-center">
             <Spinner aria-label="로딩중 ..." />
@@ -63,8 +74,7 @@ export default function Chat() {
         )}
       </div>
 
-      {/* 메시지 입력 폼 */}
-      <form onSubmit={handleSendMessage} className="flex mt-4">
+      <form onSubmit={handleSendMessage} className="flex mt-4 ">
         <input
           type="text"
           value={inputMessage}

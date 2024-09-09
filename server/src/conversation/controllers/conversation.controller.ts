@@ -17,7 +17,6 @@ export default class ConversationController {
     const email = req.session.email;
 
     try {
-      console.log(req.body);
       const { message, conversationId } = await conversationDtoSchema.validateAsync(req.body);
       if (!email || !message) {
         return failedResponse(res, "유저 이메일, 메시지가 필요합니다.", 400);
@@ -35,15 +34,11 @@ export default class ConversationController {
       }
     } catch (error) {
       console.log(error);
-      if (error instanceof ErrorHandler) {
-        return failedResponse(res, error.message, 400);
-      } else {
-        return failedResponse(res, "서버에 오류가 발생했습니다", 500);
-      }
+      next(error);
     }
   };
 
-  getConversation = async (req: Request, res: Response): Promise<void> => {
+  getConversation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const email = req.session.email;
 
     if (!email) {
@@ -56,11 +51,7 @@ export default class ConversationController {
       return successResponse(res, "메시지 조회에 성공했습니다.", messages, 200);
     } catch (error) {
       console.error(error);
-      if (error instanceof ErrorHandler) {
-        return failedResponse(res, error.message, 400);
-      } else {
-        return failedResponse(res, "서버에 오류가 발생했습니다", 500);
-      }
+      next(error);
     }
   };
 }

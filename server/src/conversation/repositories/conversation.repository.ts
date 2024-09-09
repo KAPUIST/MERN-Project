@@ -12,12 +12,7 @@ export default class ConversationRepository {
   }
   // 유저 ID로 대화 찾기
   async findById(conversationId: string): Promise<IConversation | null> {
-    return this.conversationModel.findOne({ _id: conversationId }).exec();
-  }
-
-  // 대화 저장
-  async save(conversation: IConversation): Promise<IConversation> {
-    return conversation.save();
+    return this.conversationModel.findById({ _id: conversationId }).exec();
   }
   // 새로운 대화 생성
   async create(conversationData: Partial<IConversation>): Promise<IConversation> {
