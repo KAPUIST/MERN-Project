@@ -31,24 +31,16 @@ export default class ConversationService {
 
   //기존대화방에 추가해야함
   public async addMessageToConversation(conversationId: string, email: string, message: string): Promise<string> {
-    // 1. 해당 대화방이 있는지 확인
     const conversation = await this.conversationRepository.findById(conversationId);
-
     if (!conversation) {
       throw new ErrorHandler(404, "해당 대화방을 찾을 수 없습니다.");
     }
-
-    // 2. AI 응답 생성 (OpenAI API 호출)
     const aiResponse = await this.getAiResponse(message);
-
-    // 3. 메시지 추가 (유저 질문 및 AI 응답)
     conversation.messages.push({
       question: message,
       response: aiResponse,
       date: new Date()
     });
-
-    // 4. 대화 저장
     await conversation.save();
 
     return aiResponse; // 추가된 AI 응답 반환
