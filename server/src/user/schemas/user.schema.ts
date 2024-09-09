@@ -6,6 +6,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "user" | "admin";
+  questionIds: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -32,7 +33,8 @@ const userSchema = new mongoose.Schema<IUser, IUserModel>(
       type: String,
       enum: ["user", "admin"],
       default: "user"
-    }
+    },
+    questionIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Conversation" }]
   },
   { timestamps: true }
 );

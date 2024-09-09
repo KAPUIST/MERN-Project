@@ -1,11 +1,11 @@
-import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
+import { Avatar, Button, Dropdown, Navbar } from 'flowbite-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AiOutlineSearch } from 'react-icons/ai';
+
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toggleTheme } from '../redux/theme/themeSlice';
-import axios from 'axios';
+import { deleteUserApi } from '../api/api';
 import {
   startDeleteUser,
   successDeleteUser,
@@ -21,7 +21,7 @@ export default function Header() {
   const handleLogout = async () => {
     dispatch(startDeleteUser());
     try {
-      await axios.delete('/api/auth/signout');
+      await deleteUserApi();
       dispatch(successDeleteUser());
       navigate('/');
     } catch (error) {
@@ -48,17 +48,6 @@ export default function Header() {
         </span>
         자기소개소
       </Link>
-      <form>
-        <TextInput
-          type="text"
-          placeholder="검색..."
-          rightIcon={AiOutlineSearch}
-          className="hidden lg:inline"
-        />
-      </form>
-      <Button className="w-12 h-10 lg:hidden" color="gray" pill>
-        <AiOutlineSearch />
-      </Button>
       <div className="flex gap-2 md:order-2">
         <Button
           className="w-12 h-10 hidden sm:inline"
@@ -101,12 +90,11 @@ export default function Header() {
         <Navbar.Link active={path === '/'} as={'div'}>
           <Link to="/">Home</Link>
         </Navbar.Link>
-        <Navbar.Link active={path === '/about'} as={'div'}>
-          <Link to="/about">About</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === '/projects'} as={'div'}>
-          <Link to="/projects">Projects</Link>
-        </Navbar.Link>
+        {currentUser && (
+          <Navbar.Link active={path === '/chat'} as={'div'}>
+            <Link to="/chat">Chat</Link>
+          </Navbar.Link>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );

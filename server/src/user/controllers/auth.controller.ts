@@ -29,6 +29,7 @@ export default class AuthController {
       const user = await this.authService.loginUser(userInputData);
 
       req.session.email = user.email;
+
       successResponse(res, "로그인 성공", user, 200);
     } catch (error) {
       next(error);

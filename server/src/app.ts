@@ -1,12 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
+import express from "express";
+dotenv.config();
+
 import cookieParser from "cookie-parser";
 import { CustomErrorHandler } from "./middlewares/error.middleware";
 import { connectDB } from "./config/database";
 import router from "./router/router";
 import session from "express-session";
 
-dotenv.config();
 declare module "express-session" {
   export interface SessionData {
     email: string;

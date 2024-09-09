@@ -1,10 +1,18 @@
 import { Sidebar } from 'flowbite-react';
 import { HiUser, HiArrowSmRight, HiOutlineNewspaper } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { deleteUserApi } from '../api/api';
+import {
+  startDeleteUser,
+  failedDeleteUser,
+  successDeleteUser,
+} from '../redux/user/userSlice';
 export default function DashSidebar() {
   const location = useLocation();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [tab, setTab] = useState('');
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -13,6 +21,24 @@ export default function DashSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+  const handleLogout = async () => {
+    dispatch(startDeleteUser());
+    try {
+      await deleteUserApi();
+      dispatch(successDeleteUser());
+      navigate('/');
+    } catch (error) {
+      if (error.response) {
+        dispatch(
+          failedDeleteUser(
+            error.response.data.message || '로그아웃 중 오류가 발생했습니다.'
+          )
+        );
+      } else {
+        dispatch(failedDeleteUser(error.message));
+      }
+    }
+  };
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
@@ -42,6 +68,7 @@ export default function DashSidebar() {
             icon={HiArrowSmRight}
             labelColor="dark"
             className="cursor-pointer"
+            onClick={handleLogout}
           >
             로그아웃
           </Sidebar.Item>
