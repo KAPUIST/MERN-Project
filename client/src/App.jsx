@@ -19,6 +19,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />}></Route>
         </Route>
         <Route path="/chat" element={<Chat />}></Route>
+        <Route path="/chat/:chatRoomId" element={<Chat />}></Route>
       </Routes>
       <Footer />
     </BrowserRouter>

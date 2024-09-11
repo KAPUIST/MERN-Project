@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* 라이트 모드 스크롤바 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0; /* 스크롤바 색상 (라이트 모드) */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* 스크롤 트랙 색상 (라이트 모드) */
+}
+
+/* 다크 모드 스크롤바 */
+.dark::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* 스크롤바 색상 (다크 모드) */
+}
+
+.dark::-webkit-scrollbar-track {
+  background-color: #374151; /* 스크롤 트랙 색상 (다크 모드) */
+}
+
+/* 파이어폭스 스크롤바 */
+.scrollbar-dark {
+  scrollbar-color: #4b5563 #374151; /* 다크모드: 스크롤바, 트랙 색상 */
+}
+
+.scrollbar-light {
+  scrollbar-color: #c0c0c0 #f0f0f0; /* 라이트모드: 스크롤바, 트랙 색상 */
+}

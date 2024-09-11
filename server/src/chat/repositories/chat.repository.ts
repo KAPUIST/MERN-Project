@@ -53,7 +53,15 @@ export default class ChatRepository {
   }
 
   // 특정 채팅방의 메시지 리스트 가져오기
-  async getMessagesByChatRoomId(chatRoomId: string): Promise<IMessage[]> {
-    return await this.messageModel.find({ chatRoomId }).sort({ createdAt: 1 }).exec();
+  async getMessagesByChatRoomId({
+    chatRoomId,
+    skip,
+    limit
+  }: {
+    chatRoomId: string;
+    skip: number;
+    limit: number;
+  }): Promise<IMessage[]> {
+    return await this.messageModel.find({ chatRoomId }).sort({ createdAt: -1 }).skip(skip).limit(limit).exec();
   }
 }

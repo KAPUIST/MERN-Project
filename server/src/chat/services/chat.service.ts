@@ -29,8 +29,20 @@ export default class ChatService {
     return await this.chatRepository.getAllChatRooms(email);
   }
 
-  async getChatRoomMessages(chatRoomId: string): Promise<IMessage[]> {
-    return await this.chatRepository.getMessagesByChatRoomId(chatRoomId);
+  async getChatRoomMessages({
+    chatRoomId,
+    skip,
+    limit
+  }: {
+    chatRoomId: string;
+    skip: number;
+    limit: number;
+  }): Promise<IMessage[]> {
+    return await this.chatRepository.getMessagesByChatRoomId({
+      chatRoomId,
+      skip,
+      limit
+    });
   }
 
   async handleUserMessage({ chatRoomId, message }: { chatRoomId: string; message: string }) {
@@ -53,16 +65,20 @@ export default class ChatService {
   }
   private async getAiResponse(message: string): Promise<string> {
     const response = await this.openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
+      max_tokens: 800,
+      temperature: 0.5,
       messages: [
         {
           role: "system",
           content: `
-          너는 자기소개서를 첨삭하는 AI야. 다음과 같은 형식으로 수정 사항과 피드백을 제공해야 해:
-          
-  
-          1. 피드백: 수정 이유, 어떤 문제를 발견했고, 어떻게 수정했는지 설명.
-          이렇게 원본 문장과 수정된 문장을 비교하면서 피드백을 제공해.
+          너는 고도로 훈련된 자기소개서 첨삭 AI야. 다음과 같은 형식으로 피드백을 제공해줘:
+      1. 피드백: 구체적으로 문제점을 설명하고, 왜 수정이 필요한지 논리적으로 서술해.
+      2. 수정 후 문장: 수정된 문장을 제시하고, 어떻게 개선했는지 설명해.
+      
+      예시:
+      피드백: [여기에 문제점과 수정 이유를 설명]
+      수정 후: [수정된 문장]
           `
         },
         { role: "user", content: message }

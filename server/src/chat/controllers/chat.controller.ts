@@ -20,21 +20,21 @@ export default class ChatController {
     }
 
     try {
-      const { message, chatId } = await chatDtoSchema.validateAsync(req.body);
+      const { message, chatRoomId } = await chatDtoSchema.validateAsync(req.body);
       if (!message) {
         failedResponse(res, "메시지는 필수입니다.", 400);
       }
-      let chatRoomId: string;
-      if (!chatId) {
-        chatRoomId = await this.chatService.createChatRoom(email);
+      let chatId: string;
+      if (!chatRoomId) {
+        chatId = await this.chatService.createChatRoom(email);
       } else {
-        const chatRoom = await this.chatService.findChatRoomById(chatId);
+        const chatRoom = await this.chatService.findChatRoomById(chatRoomId);
         if (!chatRoom) {
           return failedResponse(res, "해당 채팅방을 찾을 수 없습니다.");
         }
-        chatRoomId = chatId;
+        chatId = chatRoomId;
       }
-      const newMessage = await this.chatService.handleUserMessage({ chatRoomId, message });
+      const newMessage = await this.chatService.handleUserMessage({ chatRoomId: chatId, message });
       return successResponse(res, "메시지가 성공적으로 전송되었습니다.", newMessage, 201);
     } catch (error) {
       console.log(error);
@@ -58,12 +58,19 @@ export default class ChatController {
   getChatRoomMessages = async (req: Request, res: Response, next: NextFunction) => {
     const { chatRoomId } = req.params;
 
+    let { page = 1, limit = 20 } = req.query; // 기본 값: page 1, limit 20
     if (!chatRoomId) {
       return failedResponse(res, "채팅방 ID가 필요합니다.", 400);
     }
 
     try {
-      const messages = await this.chatService.getChatRoomMessages(chatRoomId);
+      limit = parseInt(limit as string);
+      const skip = (parseInt(page as string) - 1) * limit;
+      const messages = await this.chatService.getChatRoomMessages({
+        chatRoomId,
+        skip,
+        limit
+      });
       return successResponse(res, "메시지 리스트가 성공적으로 로드되었습니다.", messages, 200);
     } catch (error) {
       next(error);
