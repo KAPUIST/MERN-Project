@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { startConversationApi } from '../api/api';
+import { startChatApi } from '../api/chatApi';
 import {
   startSendMessage,
   failedSendMessage,
@@ -30,8 +30,8 @@ export default function Chat() {
     try {
       const userMessage = inputMessage; // 사용자 메시지
       dispatch(startSendMessage(userMessage));
-      // 서버로 메시지 전송 후 AI 응답 대기
-      const res = await startConversationApi({
+
+      const res = await startChatApi({
         conversationId,
         message: inputMessage,
       });

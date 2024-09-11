@@ -3,7 +3,7 @@ import { HiUser, HiArrowSmRight, HiOutlineNewspaper } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { deleteUserApi } from '../api/api';
+import { deleteUserApi } from '../api/userApi';
 import {
   startDeleteUser,
   failedDeleteUser,

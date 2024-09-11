@@ -5,7 +5,7 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toggleTheme } from '../redux/theme/themeSlice';
-import { deleteUserApi } from '../api/api';
+import { deleteUserApi } from '../api/userApi';
 import {
   startDeleteUser,
   successDeleteUser,
